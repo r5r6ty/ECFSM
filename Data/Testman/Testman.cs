@@ -1,5 +1,4 @@
 using System;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace ECFSM
@@ -20,61 +19,86 @@ namespace ECFSM
         [Tooltip("Acceleration and deceleration")]
         public float SpeedChangeRate = 10.0f;
 
+        [Tooltip("The height the player can jump")]
+        public float JumpHeight = 1.2f;
+
+        [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
+        public float Gravity = -15.0f;
+
+        [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
+        public float JumpTimeout = 0.50f;
+
+        [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
+        public float FallTimeout = 0.15f;
+
+        [Tooltip("Useful for rough ground")]
+        public float GroundedOffset = -0.14f;
+
+        [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
+        public float GroundedRadius = 0.28f;
+
         private int _animIDSpeed = Animator.StringToHash("Speed");
+        private int _animIDGrounded = Animator.StringToHash("Grounded");
+        private int _animIDJump = Animator.StringToHash("Jump");
+        private int _animIDFreeFall = Animator.StringToHash("FreeFall");
         private int _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
 
         private void OnValidate()
         {
-            // ≥ı ºªØ
-            states[0] = new State
+            unsafe
             {
-                onEnter = (variables) =>
+                // ≥ı ºªØ
+                states[0] = new State
                 {
-                    Debug.Log("≥ı ºªØ£∫0");
-                    variables.Set("_speed", 0.1f);
-                    variables.Set("_animationBlend", 100.1f);
-                    variables.Set("_targetRotation", 0.0f);
-                    variables.Set("_rotationVelocity", 0.0f);
-                    variables.Set("_verticalVelocity", 0.0f);
-
-                    unsafe
+                    onEnter = (_V) =>
                     {
-                        ((MyClass<Com>)variables["_com"]).value.ChangeState(10);
-                    }
-                },
-                onUpdate = (V) =>
-                {
-                    unsafe
+                        Debug.Log("≥ı ºªØ£∫0");
+                        _V.Set("_speed", 0.0f);
+                        _V.Set("_animationBlend", 0.0f);
+                        _V.Set("_targetRotation", 0.0f);
+                        _V.Set("_rotationVelocity", 0.0f);
+                        _V.Set("_verticalVelocity", 0.0f);
+                        _V.Set("_terminalVelocity", 53.0f);
+                        _V.Set("Grounded", true);
+
+                        _V.Set("_jumpTimeoutDelta", 0.0f);
+                        _V.Set("_fallTimeoutDelta", 0.0f);
+
+                        _V.Get<Com>("_com").ChangeState(10);
+                    },
+                    onUpdate = (_V) =>
                     {
                         #region ≤‚ ‘≤‚ ‘≤‚ ‘≤‚ ‘≤‚ ‘≤‚ ‘≤‚ ‘≤‚ ‘
-                        //MyClass<Transform> t = (MyClass<Transform>)V["transform"];
+                        //Val<Transform> t = (Val<Transform>)V["transform"];
 
-                        var t2 = V.Get<Transform>("transform");
-                        Debug.Log(t2.value);
+                        //var t2 = _V.Get<Transform>("transform");
+                        //Debug.Log(t2);
 
 
 
-                        float* _speed = (float*)UnsafeUtility.AddressOf(ref ((MyClass<float>)V["_speed"]).value);
-                        float* _animationBlend = (float*)UnsafeUtility.AddressOf(ref ((MyClass<float>)V["_animationBlend"]).value);
+                        //Val<int> ggg = (Val<int>)_V["HP"];
+                        //Val<float> ggg2 = (Val<float>)_V["fff"];
 
-                        //fixed (float* gg = &ggg.value, gg2 = &ggg3.value)
+                        //fixed (float* gg = &ggg, gg2 = &ggg3)
                         //{
                         //    *gg = *gg + 1.1f;
                         //    *gg2 = *gg2 + 1.1f;
                         //}
 
-                        //void* ptr = UnsafeUtility.AddressOf(ref ggg.value);
-                        //void* ptr2 = UnsafeUtility.AddressOf(ref ggg3.value);
+                        //void* ptr = UnsafeUtility.AddressOf(ref ggg);
+                        //void* ptr2 = UnsafeUtility.AddressOf(ref ggg2);
+                        void* ptr = _V.GetPointer<int>("HP");
+                        void* ptr2 = _V.GetPointer<float>("fff");
 
-                        //float* gg = (float*)ggg.ptr;
-                        *_speed = *_speed + 1.1f;
+                        int* gg = (int*)_V.GetPointer<int>("HP");
+                        *gg = *gg + 1;
 
-                        //float* gg2 = (float*)ggg3.ptr;
-                        *_animationBlend = *_animationBlend + 30.1f;
+                        float* gg2 = (float*)ptr2;
+                        *gg2 = *gg2 + 30.1f;
 
 
-                        Debug.Log((float)((MyClass<float>)V["_speed"]).value);
-                        Debug.Log((float)((MyClass<float>)V["_animationBlend"]).value);
+                        //Debug.Log((float)((Val<int>)_V["HP"]));
+                        //Debug.Log((float)((Val<float>)_V["fff"]));
 
                         //ref object HP = ref V["HP"];
 
@@ -92,31 +116,29 @@ namespace ECFSM
                         //Debug.Log("sasdsd " + HP);
                         #endregion
                     }
-                }
-            };
-            // ¥˝ª˙
-            states[10] = new State
-            {
-                onEnter = (variables) =>
+                };
+                // ¥˝ª˙/“∆∂Ø
+                states[10] = new State
                 {
-                    Debug.Log("¥˝ª˙£∫10");
-                },
-                onUpdate = (V) =>
-                {
-                    unsafe
+                    onEnter = (_V) =>
                     {
-                        Transform transform = V.Get<Transform>("transform").value;
-                        //Rigidbody rigidbody = V.Get<Rigidbody>("rigidbody").value;
-                        //CapsuleCollider capsuleCollider = V.Get<CapsuleCollider>("capsuleCollider").value;
-                        Animator animator = V.Get<Animator>("animator").value;
-                        CharacterController _controller = V.Get<CharacterController>("characterController").value;
-                        float* _speed = (float*)UnsafeUtility.AddressOf(ref ((MyClass<float>)V["_speed"]).value);
-                        float* _animationBlend = (float*)UnsafeUtility.AddressOf(ref ((MyClass<float>)V["_animationBlend"]).value);
-                        float* _targetRotation = (float*)UnsafeUtility.AddressOf(ref ((MyClass<float>)V["_targetRotation"]).value);
-                        float* _rotationVelocity = (float*)UnsafeUtility.AddressOf(ref ((MyClass<float>)V["_rotationVelocity"]).value);
-                        float* _verticalVelocity = (float*)UnsafeUtility.AddressOf(ref ((MyClass<float>)V["_verticalVelocity"]).value);
+                        Debug.Log("¥˝ª˙/“∆∂Ø£∫10");
+                    },
+                    onUpdate = (_V) =>
+                    {
 
-                        Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                        Transform transform = _V.Get<Transform>("transform");
+                        //Rigidbody rigidbody = V.Get<Rigidbody>("rigidbody");
+                        //CapsuleCollider capsuleCollider = V.Get<CapsuleCollider>("capsuleCollider");
+                        Animator animator = _V.Get<Animator>("animator");
+                        CharacterController _controller = _V.Get<CharacterController>("characterController");
+                        float* _speed = (float*)_V.GetPointer<float>("_speed");
+                        float* _animationBlend = (float*)_V.GetPointer<float>("_animationBlend");
+                        float* _targetRotation = (float*)_V.GetPointer<float>("_targetRotation");
+                        float* _rotationVelocity = (float*)_V.GetPointer<float>("_rotationVelocity");
+                        float* _verticalVelocity = (float*)_V.GetPointer<float>("_verticalVelocity");
+
+                        Vector2 move = new Vector2(UnityEngine.Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
                         // set target speed based on move speed, sprint speed and if sprint is pressed
                         float targetSpeed = Input.GetKey(KeyCode.LeftShift) ? SprintSpeed : MoveSpeed;
@@ -143,7 +165,7 @@ namespace ECFSM
                                 Time.deltaTime * SpeedChangeRate);
 
                             // round speed to 3 decimal places
-                            //*_speed = Mathf.Round(*_speed * 1000f) / 1000f;
+                            *_speed = Mathf.Round(*_speed * 1000f) / 1000f;
                         }
                         else
                         {
@@ -161,7 +183,7 @@ namespace ECFSM
                         if (move != Vector2.zero)
                         {
                             *_targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                              Camera.main.transform.eulerAngles.y;
+                                                Camera.main.transform.eulerAngles.y;
                             float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, *_targetRotation, ref *_rotationVelocity,
                                 RotationSmoothTime);
 
@@ -174,7 +196,7 @@ namespace ECFSM
 
                         // move the player
                         _controller.Move(targetDirection.normalized * (*_speed * Time.deltaTime) +
-                                         new Vector3(0.0f, *_verticalVelocity, 0.0f) * Time.deltaTime);
+                                            new Vector3(0.0f, *_verticalVelocity, 0.0f) * Time.deltaTime);
 
                         // update animator if using character
                         if (animator != null)
@@ -182,37 +204,85 @@ namespace ECFSM
                             animator.SetFloat(_animIDSpeed, *_animationBlend);
                             animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
                         }
-                    }
 
-                },
-                onExit = (variables) => { }
-            };
+                        if (Input.GetKey(KeyCode.Space))
+                        {
+                            _V.Get<Com>("_com").ChangeState(30);
+                        }
 
-            // “∆∂Ø
-            states[20] = new State
-            {
-                onEnter = (variables) =>
+                    },
+                    onExit = (_V) => { }
+                };
+                // ∆Ã¯
+                states[30] = new State
                 {
-                    Debug.Log(20);
-                },
-                onUpdate = (variables) =>
-                {
-                    if (!Input.GetKey(KeyCode.W))
+                    onEnter = (_V) =>
                     {
-                        //(variables["_com"] as Com).ChangeState(10);
-                    }
-                },
-                onExit = (variables) => { }
-            };
+                        Debug.Log("∆Ã¯£∫30");
 
-            // Ã¯‘æ
-            states[30] = new State
-            {
-                onEnter = (variables) => { },
-                onUpdate = (variables) => { },
-                onExit = (variables) => { }
-            };
+                        Animator animator = _V.Get<Animator>("animator");
+                        float* _verticalVelocity = (float*)_V.GetPointer<float>("_verticalVelocity");
+
+                        // the square root of H * -2 * G = how much velocity needed to reach desired height
+                        *_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+
+                        // update animator if using character
+                        animator.SetBool(_animIDJump, true);
+                    },
+                    onUpdate = (_V) =>
+                    {
+
+                        Transform transform = _V.Get<Transform>("transform");
+                        Animator animator = _V.Get<Animator>("animator");
+                        float* _verticalVelocity = (float*)_V.GetPointer<float>("_verticalVelocity");
+                        float* _terminalVelocity = (float*)_V.GetPointer<float>("_terminalVelocity");
+                        bool* Grounded = (bool*)_V.GetPointer<bool>("Grounded");
+                        CharacterController _controller = _V.Get<CharacterController>("characterController");
+                        float* _targetRotation = (float*)_V.GetPointer<float>("_targetRotation");
+                        float* _speed = (float*)_V.GetPointer<float>("_speed");
+                        LayerMask* GroundLayers = (LayerMask*)_V.GetPointer<LayerMask>("GroundLayers");
+
+
+                        if (*_verticalVelocity < 0.0f)
+                        {
+                            //animator.SetBool(_animIDFreeFall, true);
+                            // set sphere position, with offset
+                            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
+                            *Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, *GroundLayers,
+                            QueryTriggerInteraction.Ignore);
+
+                            // update animator if using character
+                            if (animator != null)
+                            {
+                                animator.SetBool(_animIDGrounded, *Grounded);
+                            }
+                            if (*Grounded)
+                            {
+                                animator.SetBool(_animIDJump, false);
+
+                                _V.Get<Com>("_com").ChangeState(10);
+                            }
+                        }
+                        else
+                        {
+                            //animator.SetBool(_animIDFreeFall, false);
+                        }
+
+
+
+                        // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
+                        if (*_verticalVelocity < *_terminalVelocity)
+                        {
+                            *_verticalVelocity += Gravity * Time.deltaTime;
+                        }
+                        Vector3 targetDirection = Quaternion.Euler(0.0f, *_targetRotation, 0.0f) * Vector3.forward;
+                        // move the player
+                        _controller.Move(targetDirection.normalized * (*_speed * Time.deltaTime) +
+                                     new Vector3(0.0f, *_verticalVelocity, 0.0f) * Time.deltaTime);
+                    },
+                    onExit = (_V) => { }
+                };
+            }
         }
-
     }
 }

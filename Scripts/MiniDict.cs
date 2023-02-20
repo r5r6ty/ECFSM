@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using Unity.Collections.LowLevel.Unsafe;
+using static UnityEngine.GraphicsBuffer;
 
 namespace ECFSM
 {
-    public class MiniDict2<Key>
+    public class MiniDict<Key>
     {
         // 键值对总数
         private int N;
@@ -11,24 +13,24 @@ namespace ECFSM
         // 容量
         private int M = 16;
         private Key[] keys;
-        private object[] values;
+        private Variable[] values;
 
-        public MiniDict2()
+        public MiniDict()
         {
             keys = new Key[M];
-            values = new object[M];
+            values = new Variable[M];
         }
 
         // 指定容量
-        public MiniDict2(int cap)
+        public MiniDict(int cap)
         {
             M = cap;
             keys = new Key[M];
-            values = new object[M];
+            values = new Variable[M];
         }
 
         // 不要从索引器删除, key 不能为 null
-        public ref object this[Key key]
+        public ref Variable this[Key key]
         {
             get
             {
@@ -57,7 +59,7 @@ namespace ECFSM
         // 更改容量, 用于扩容或元素太少
         private void Resize(int cap)
         {
-            MiniDict2<Key> newDict = new MiniDict2<Key>(cap);
+            MiniDict<Key> newDict = new MiniDict<Key>(cap);
             for (int i = 0; i < M; i++)
             {
                 if (keys[i] != null)
@@ -80,12 +82,12 @@ namespace ECFSM
             {
                 if (Object.Equals(keys[i], key))
                 {
-                    values[i] = new MyClass<T>(value);
+                    values[i] = new Variable<T>(value);
                     return;
                 }
             }
             keys[i] = key;
-            values[i] = new MyClass<T>(value);
+            values[i] = new Variable<T>(value);
             N += 1;
         }
 
@@ -109,11 +111,33 @@ namespace ECFSM
         //}
 
         // 查
-        public ref MyClass<T> Get<T>(Key key)
+        public ref T Get<T>(Key key)
         {
             for (int i = Hash(key); keys[i] != null; i = (i + 1) % M)
                 if (Object.Equals(keys[i], key))
-                    return ref UnsafeUtility.As<object, MyClass<T>>(ref values[i]);
+                    return ref UnsafeUtility.As<Variable, Variable<T>>(ref values[i]).value;
+            throw null;
+        }
+
+        unsafe public void* GetPointer<T>(Key key) where T : struct
+        {
+            for (int i = Hash(key); keys[i] != null; i = (i + 1) % M)
+                if (Object.Equals(keys[i], key))
+                {
+                    Variable<T> val = (Variable<T>)values[i];
+                    if (val.ptr == null)
+                    {
+                        void* ptr = UnsafeUtility.AddressOf(ref val.value);
+                        val.ptr = ptr;
+                        return ptr;
+                    }
+                    else
+                    {
+                        return val.ptr;
+                    }
+                }
+            Set(key, default(T));
+            return GetPointer<T>(key);
             throw null;
         }
 
@@ -133,14 +157,14 @@ namespace ECFSM
             while (!Object.Equals(keys[i], key))
                 i = (i + 1) % M;
             keys[i] = default(Key);
-            values[i] = default(MyClass<object>);
+            values[i] = default(Variable<object>);
             i = (i + 1) % M;
             while (keys[i] != null)
             {
                 Key keyToRedo = keys[i];
                 object valueToRedo = values[i];
                 keys[i] = default(Key);
-                values[i] = default(MyClass<object>);
+                values[i] = default(Variable<object>);
                 N -= 1;
                 Set(keyToRedo, valueToRedo);
                 i = (i + 1) % M;
@@ -158,5 +182,4 @@ namespace ECFSM
             return false;
         }
     }
-
 }

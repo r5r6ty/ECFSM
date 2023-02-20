@@ -8,10 +8,10 @@ namespace ECFSM
 {
     public class State
     {
-        public Action<MiniDict2<string>> onEnter;
-        public Action<MiniDict2<string>> onFixedUpdate;
-        public Action<MiniDict2<string>> onUpdate;
-        public Action<MiniDict2<string>> onExit;
+        public Action<MiniDict<string>> onEnter;
+        public Action<MiniDict<string>> onFixedUpdate;
+        public Action<MiniDict<string>> onUpdate;
+        public Action<MiniDict<string>> onExit;
     }
 
 #if ODIN_INSPECTOR

@@ -1,38 +1,25 @@
 #if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
+using System;
 #endif
 using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace ECFSM
 {
-    public class MyClass<T>
+    public abstract class Variable { }
+
+    public class Variable<T> : Variable
     {
         public T value;
         unsafe public void* ptr;
-        public MyClass(T value)
+        public Variable(T value)
         {
             this.value = value;
         }
     }
-
-    public class Dict : Dictionary<string, object>
-    {
-        unsafe public int* Int(string key)
-        {
-            int res = (int)this[key];
-            return &res;
-        }
-
-        unsafe public float* Float(string key)
-        {
-            Vector3 a = new Vector3(1, 2, 3);
-            a.x = (float)this[key];
-            return &a.x;
-        }
-    }
-
 #if !ODIN_INSPECTOR
     [Serializable]
     public class StringObjectDictionary : SerializableDictionary<string, Object> { }
@@ -77,19 +64,62 @@ namespace ECFSM
 
         // 变量字典
         //[HideInInspector]
-        private MiniDict2<string> variables = new MiniDict2<string>();
+        private MiniDict<string> variables = new MiniDict<string>();
 
         void Awake()
         {
             unsafe
             {
+                // 设置一些访问外界的变量
                 variables.Set("_com", this);
                 variables.Set("_entity", entity);
+                // 设置注入游戏物体
                 foreach (var obj in injectObject)
-                    variables.Set(obj.Key, obj.Value);
+                {
+                    Object c = obj.Value;
+                    variables.Set(obj.Key, c);
+                }
+                // 设置注入值变量
                 foreach (var v in persistentVariables)
                 {
-                    variables.Set(v.Key, v.Value);
+                    // 陆续追加
+                    switch (v.Value.GetType())
+                    {
+                        case Type t when t == typeof(int):
+                            {
+                                int c = (int)v.Value;
+                                variables.Set(v.Key, c);
+                            }
+                            break;
+                        case Type t when t == typeof(float):
+                            {
+                                float c = (float)v.Value;
+                                variables.Set(v.Key, c);
+                            }
+                            break;
+                        case Type t when t == typeof(bool):
+                            {
+                                bool c = (bool)v.Value;
+                                variables.Set(v.Key, c);
+                            }
+                            break;
+                        case Type t when t == typeof(Vector3):
+                            {
+                                Vector3 c = (Vector3)v.Value;
+                                variables.Set(v.Key, c);
+                            }
+                            break;
+                        case Type t when t == typeof(LayerMask):
+                            {
+                                LayerMask c = (LayerMask)v.Value;
+                                variables.Set(v.Key, c);
+                            }
+                            break;
+                        default:
+                            Debug.LogWarning("写入未注册过的类型！");
+                            variables.Set(v.Key, v);
+                            break;
+                    }
                 }
 
                 #region 测试测试测试测试测试测试测试测试
@@ -191,6 +221,7 @@ namespace ECFSM
         }
 
 #if ODIN_INSPECTOR
+        // 追加值变量用的
         [SerializeField]
         private readonly string VKey;
         [InlineButton("AddV", "Add")]
