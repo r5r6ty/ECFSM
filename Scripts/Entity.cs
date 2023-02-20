@@ -11,7 +11,10 @@ namespace ECFSM
 
         void Start()
         {
-
+            foreach (var com in coms)
+            {
+                com.OnStart();
+            }
         }
 
         // Update is called once per frame

@@ -1,18 +1,17 @@
 using Sirenix.OdinInspector;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using Unity.Collections.LowLevel.Unsafe;
 using Object = UnityEngine.Object;
 
 namespace ECFSM
 {
     public class State
     {
-        public Action<Dictionary<string, object>> onEnter;
-        public Action<Dictionary<string, object>> onFixedUpdate;
-        public Action<Dictionary<string, object>> onUpdate;
-        public Action<Dictionary<string, object>> onExit;
+        public Action<MiniDict2<string>> onEnter;
+        public Action<MiniDict2<string>> onFixedUpdate;
+        public Action<MiniDict2<string>> onUpdate;
+        public Action<MiniDict2<string>> onExit;
     }
 
 #if ODIN_INSPECTOR

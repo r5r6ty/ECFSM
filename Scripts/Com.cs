@@ -1,6 +1,5 @@
 #if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
-using System;
 #endif
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +7,32 @@ using Object = UnityEngine.Object;
 
 namespace ECFSM
 {
+    public class MyClass<T>
+    {
+        public T value;
+        unsafe public void* ptr;
+        public MyClass(T value)
+        {
+            this.value = value;
+        }
+    }
+
+    public class Dict : Dictionary<string, object>
+    {
+        unsafe public int* Int(string key)
+        {
+            int res = (int)this[key];
+            return &res;
+        }
+
+        unsafe public float* Float(string key)
+        {
+            Vector3 a = new Vector3(1, 2, 3);
+            a.x = (float)this[key];
+            return &a.x;
+        }
+    }
+
 #if !ODIN_INSPECTOR
     [Serializable]
     public class StringObjectDictionary : SerializableDictionary<string, Object> { }
@@ -48,34 +73,121 @@ namespace ECFSM
         public StringObjectDictionary injectObject = new StringObjectDictionary();
 #endif
         // 初始变量（但是这个无法被序列化显示到编辑器里，只能用Odin，Odin怎么这么强啊！）
-        public Dictionary<string, object> persistentData = new Dictionary<string, object>();
+        public Dictionary<string, object> persistentVariables = new Dictionary<string, object>();
+
         // 变量字典
-        [HideInInspector]
-        public Dictionary<string, object> variables = new Dictionary<string, object>();
+        //[HideInInspector]
+        private MiniDict2<string> variables = new MiniDict2<string>();
 
         void Awake()
         {
-            variables.Add("_com", this);
-            variables.Add("_entity", entity);
-            foreach (var obj in injectObject)
-                variables.Add(obj.Key, obj.Value);
+            unsafe
+            {
+                variables.Set("_com", this);
+                variables.Set("_entity", entity);
+                foreach (var obj in injectObject)
+                    variables.Set(obj.Key, obj.Value);
+                foreach (var v in persistentVariables)
+                {
+                    variables.Set(v.Key, v.Value);
+                }
+
+                #region 测试测试测试测试测试测试测试测试
+                //print(variables.Get("_com"));
+                //print(variables.Get("HP"));
+
+
+
+                //ref object HP = ref variables.Get("HP");
+
+                //int aasd = 256;
+                //variables.Add("HP2", &aasd);
+                //int* ggg = (int*)variables.Int("HP");
+
+                //Debug.Log($"{*ggg},{*ggg}");
+                //Debug.Log(*ggg);
+                //Debug.Log(*ggg);
+                //Debug.Log(*ggg);
+                //*ggg += 1;
+                //Debug.Log(*ggg);
+
+
+                //object[] thy = new object[12];
+                //thy[3] = (Int32)337845;
+
+                ////获取结构体占用空间的大小
+                //int nSize = Marshal.SizeOf(thy[3]);
+                ////声明一个相同大小的内存空间
+                //IntPtr intPtr = Marshal.AllocHGlobal(nSize);
+                ////Struct->IntPtr
+                //Marshal.StructureToPtr(thy[3], intPtr, true);
+                ////IntPtr->Struct
+                ////Int32 Info = (Int32)Marshal.PtrToStructure(intPtr, typeof(Int32));
+
+                //void* ppttt = intPtr.ToPointer();
+                //int* sd2ss = (int*)ppttt;
+                //Debug.Log(*sd2ss);
+                //*sd2ss = 119119;
+                //Debug.Log(thy[3]);
+
+
+
+                //object[] sdd = new object[12];
+                //sdd[3] = 3375;
+                //UnsafeTool unsafeTool2 = new UnsafeTool();
+                //byte* ppt = (byte*)Marshal.UnsafeAddrOfPinnedArrayElement(sdd, 3).ToPointer();
+                //void* ptpt = *(void**)ppt;
+                //int sd2 = (int)unsafeTool2.voidPtrToObject(ptpt);
+                //Debug.Log(sd2);
+                //IntPtr ipt = Marshal.UnsafeAddrOfPinnedArrayElement(sdd, 3);
+                //int d = UnsafeUtility.As<IntPtr, int>(ref *(IntPtr*)ipt);
+                //Debug.Log(d);
+
+                //UnsafeTool unsafeTool = new UnsafeTool();
+                //int vvv = 123456;
+                //byte* objPtr = (byte*)&vvv;
+
+                //int* sd = (int*)objPtr;
+                //Debug.Log(*sd);
+                #endregion
+            }
+        }
+
+        public void OnStart()
+        {
+            if (data.states.TryGetValue(stateno, out State state))
+            {
+                state?.onEnter?.Invoke(variables);
+            }
         }
 
         public void OnUpdate()
         {
-            data.states[stateno]?.onUpdate?.Invoke(variables);
+            if (data.states.TryGetValue(stateno, out State state))
+            {
+                state?.onUpdate?.Invoke(variables);
+            }
         }
 
         public void OnFixedUpdate()
         {
-            data.states[stateno]?.onFixedUpdate?.Invoke(variables);
+            if (data.states.TryGetValue(stateno, out State state))
+            {
+                state?.onFixedUpdate?.Invoke(variables);
+            }
         }
 
         public void ChangeState(int index)
         {
-            data.states[stateno]?.onExit?.Invoke(variables);
+            if (data.states.TryGetValue(stateno, out State state))
+            {
+                state?.onExit?.Invoke(variables);
+            }
             stateno = index;
-            data.states[stateno]?.onEnter?.Invoke(variables);
+            if (data.states.TryGetValue(stateno, out state))
+            {
+                state?.onEnter?.Invoke(variables);
+            }
         }
 
 #if ODIN_INSPECTOR
@@ -102,9 +214,8 @@ namespace ECFSM
                 _ => null
             };
 
-            persistentData.Add(VKey, v);
+            persistentVariables.Add(VKey, v);
         }
 #endif
     }
-
 }
