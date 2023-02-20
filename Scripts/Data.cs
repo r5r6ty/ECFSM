@@ -1,7 +1,10 @@
+#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
+#endif
 using System;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace ECFSM
