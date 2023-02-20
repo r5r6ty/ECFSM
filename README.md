@@ -5,8 +5,8 @@
 Entity  
 &emsp;└Com  
 &emsp;&emsp;└Data - FSM  
-&emsp;&emsp;&emsp;└游戏物体
-&emsp;&emsp;&emsp;&emsp;└游戏物体...
+&emsp;&emsp;&emsp;└游戏物体  
+&emsp;&emsp;&emsp;&emsp;└游戏物体...  
 Entiy统合Com，Com存储变量，Entity遍历Com执行Com里的Data的FSM，Fsm访问Com的数据，以及通过Entity访问其他Com的数据（跨Com访问数据还未实现）
 
 # 概念：
