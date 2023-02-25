@@ -1,6 +1,4 @@
-#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
-#endif
 using System;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
@@ -20,11 +18,7 @@ namespace ECFSM
             this.value = value;
         }
     }
-#if !ODIN_INSPECTOR
-    [Serializable]
-    public class StringObjectDictionary : SerializableDictionary<string, Object> { }
-#endif
-#if ODIN_INSPECTOR
+
     public enum ValueType
     {
         Int,
@@ -42,10 +36,8 @@ namespace ECFSM
         ClipTransitionAsset
     }
     public class Com : SerializedMonoBehaviour
-#else
-    public class Com : MonoBehaviour
-#endif
     {
+        public Dictionary<string, string> asd = new Dictionary<string, string>();
         // 实体
         public Entity entity;
         // 状态数据（存有一个种类的data共用的状态列表）
@@ -54,11 +46,7 @@ namespace ECFSM
         public int stateno;
 
         // Unity物体注入（依靠插件可以被序列化显示到编辑器里）
-#if ODIN_INSPECTOR
         public Dictionary<string, Object> injectObject = new Dictionary<string, Object>();
-#else
-        public StringObjectDictionary injectObject = new StringObjectDictionary();
-#endif
         // 初始变量（但是这个无法被序列化显示到编辑器里，只能用Odin，Odin怎么这么强啊！）
         public Dictionary<string, object> persistentVariables = new Dictionary<string, object>();
 
@@ -220,7 +208,6 @@ namespace ECFSM
             }
         }
 
-#if ODIN_INSPECTOR
         // 追加值变量用的
         [SerializeField]
         private readonly string VKey;
@@ -247,6 +234,5 @@ namespace ECFSM
 
             persistentVariables.Add(VKey, v);
         }
-#endif
     }
 }

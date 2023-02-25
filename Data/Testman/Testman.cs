@@ -131,7 +131,7 @@ namespace ECFSM
                         //Rigidbody rigidbody = V.Get<Rigidbody>("rigidbody");
                         //CapsuleCollider capsuleCollider = V.Get<CapsuleCollider>("capsuleCollider");
                         Animator animator = _V.Get<Animator>("animator");
-                        CharacterController _controller = _V.Get<CharacterController>("characterController");
+                        CharacterController characterController = _V.Get<CharacterController>("characterController");
                         float* _speed = (float*)_V.GetPointer<float>("_speed");
                         float* _animationBlend = (float*)_V.GetPointer<float>("_animationBlend");
                         float* _targetRotation = (float*)_V.GetPointer<float>("_targetRotation");
@@ -150,7 +150,7 @@ namespace ECFSM
                         if (move == Vector2.zero) targetSpeed = 0.0f;
 
                         // a reference to the players current horizontal velocity
-                        float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+                        float currentHorizontalSpeed = new Vector3(characterController.velocity.x, 0.0f, characterController.velocity.z).magnitude;
 
                         float speedOffset = 0.1f;
                         float inputMagnitude = /*_input.analogMovement ? _input.move.magnitude : */1f;
@@ -195,7 +195,7 @@ namespace ECFSM
                         Vector3 targetDirection = Quaternion.Euler(0.0f, *_targetRotation, 0.0f) * Vector3.forward;
 
                         // move the player
-                        _controller.Move(targetDirection.normalized * (*_speed * Time.deltaTime) +
+                        characterController.Move(targetDirection.normalized * (*_speed * Time.deltaTime) +
                                             new Vector3(0.0f, *_verticalVelocity, 0.0f) * Time.deltaTime);
 
                         // update animator if using character
@@ -237,7 +237,7 @@ namespace ECFSM
                         float* _verticalVelocity = (float*)_V.GetPointer<float>("_verticalVelocity");
                         float* _terminalVelocity = (float*)_V.GetPointer<float>("_terminalVelocity");
                         bool* Grounded = (bool*)_V.GetPointer<bool>("Grounded");
-                        CharacterController _controller = _V.Get<CharacterController>("characterController");
+                        CharacterController characterController = _V.Get<CharacterController>("characterController");
                         float* _targetRotation = (float*)_V.GetPointer<float>("_targetRotation");
                         float* _speed = (float*)_V.GetPointer<float>("_speed");
                         LayerMask* GroundLayers = (LayerMask*)_V.GetPointer<LayerMask>("GroundLayers");
@@ -277,7 +277,7 @@ namespace ECFSM
                         }
                         Vector3 targetDirection = Quaternion.Euler(0.0f, *_targetRotation, 0.0f) * Vector3.forward;
                         // move the player
-                        _controller.Move(targetDirection.normalized * (*_speed * Time.deltaTime) +
+                        characterController.Move(targetDirection.normalized * (*_speed * Time.deltaTime) +
                                      new Vector3(0.0f, *_verticalVelocity, 0.0f) * Time.deltaTime);
                     },
                     onExit = (_V) => { }
