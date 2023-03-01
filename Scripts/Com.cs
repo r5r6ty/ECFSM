@@ -1,3 +1,4 @@
+using DictPlus;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
@@ -7,15 +8,18 @@ using Object = UnityEngine.Object;
 
 namespace ECFSM
 {
-    public abstract class Variable { }
+    public abstract class Variable
+    {
+        unsafe public void* ptr;
+    }
 
     public class Variable<T> : Variable
     {
         public T value;
-        unsafe public void* ptr;
-        public Variable(T value)
+        unsafe public Variable(T value)
         {
             this.value = value;
+            ptr = DictPlus.DictPlus.GetPtr(ref this.value);
         }
     }
 
@@ -52,7 +56,7 @@ namespace ECFSM
 
         // ±äÁ¿×Öµä
         //[HideInInspector]
-        private MiniDict<string> variables = new MiniDict<string>();
+        private Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
 
         void Awake()
         {

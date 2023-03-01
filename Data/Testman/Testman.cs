@@ -1,3 +1,4 @@
+using DictPlus;
 using System;
 using UnityEngine;
 
@@ -64,6 +65,11 @@ namespace ECFSM
                         _V.Set("_jumpTimeoutDelta", 0.0f);
                         _V.Set("_fallTimeoutDelta", 0.0f);
 
+                        Transform transform = _V.Get<Transform>("transform");
+
+                        float* _speed = (float*)_V.Set("dasdas", 0.0f);
+                        BoxCollider asdd = _V.Set("boxCollider", transform.gameObject.AddComponent<BoxCollider>());
+
                         _V.Get<Com>("_com").ChangeState(10);
                     },
                     onUpdate = (_V) =>
@@ -76,8 +82,8 @@ namespace ECFSM
 
 
 
-                        //Val<int> ggg = (Val<int>)_V["HP"];
-                        //Val<float> ggg2 = (Val<float>)_V["fff"];
+                        //Val<int> ggg = (Val<int>)_V.Get("HP"];
+                        //Val<float> ggg2 = (Val<float>)_V.Get("fff"];
 
                         //fixed (float* gg = &ggg, gg2 = &ggg3)
                         //{
@@ -87,18 +93,18 @@ namespace ECFSM
 
                         //void* ptr = UnsafeUtility.AddressOf(ref ggg);
                         //void* ptr2 = UnsafeUtility.AddressOf(ref ggg2);
-                        void* ptr = _V.GetPointer<int>("HP");
-                        void* ptr2 = _V.GetPointer<float>("fff");
+                        void* ptr = _V.Get("HP");
+                        void* ptr2 = _V.Get("fff");
 
-                        int* gg = (int*)_V.GetPointer<int>("HP");
+                        int* gg = (int*)ptr;
                         *gg = *gg + 1;
 
                         float* gg2 = (float*)ptr2;
                         *gg2 = *gg2 + 30.1f;
 
 
-                        //Debug.Log((float)((Val<int>)_V["HP"]));
-                        //Debug.Log((float)((Val<float>)_V["fff"]));
+                        //Debug.Log((float)((Val<int>)_V.Get("HP"]));
+                        //Debug.Log((float)((Val<float>)_V.Get("fff"]));
 
                         //ref object HP = ref V["HP"];
 
@@ -132,11 +138,11 @@ namespace ECFSM
                         //CapsuleCollider capsuleCollider = V.Get<CapsuleCollider>("capsuleCollider");
                         Animator animator = _V.Get<Animator>("animator");
                         CharacterController characterController = _V.Get<CharacterController>("characterController");
-                        float* _speed = (float*)_V.GetPointer<float>("_speed");
-                        float* _animationBlend = (float*)_V.GetPointer<float>("_animationBlend");
-                        float* _targetRotation = (float*)_V.GetPointer<float>("_targetRotation");
-                        float* _rotationVelocity = (float*)_V.GetPointer<float>("_rotationVelocity");
-                        float* _verticalVelocity = (float*)_V.GetPointer<float>("_verticalVelocity");
+                        float* _speed = (float*)_V.Get("_speed");
+                        float* _animationBlend = (float*)_V.Get("_animationBlend");
+                        float* _targetRotation = (float*)_V.Get("_targetRotation");
+                        float* _rotationVelocity = (float*)_V.Get("_rotationVelocity");
+                        float* _verticalVelocity = (float*)_V.Get("_verticalVelocity");
 
                         Vector2 move = new Vector2(UnityEngine.Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
@@ -221,7 +227,7 @@ namespace ECFSM
                         Debug.Log("ÆðÌø£º30");
 
                         Animator animator = _V.Get<Animator>("animator");
-                        float* _verticalVelocity = (float*)_V.GetPointer<float>("_verticalVelocity");
+                        float* _verticalVelocity = (float*)_V.Get("_verticalVelocity");
 
                         // the square root of H * -2 * G = how much velocity needed to reach desired height
                         *_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
@@ -234,13 +240,13 @@ namespace ECFSM
 
                         Transform transform = _V.Get<Transform>("transform");
                         Animator animator = _V.Get<Animator>("animator");
-                        float* _verticalVelocity = (float*)_V.GetPointer<float>("_verticalVelocity");
-                        float* _terminalVelocity = (float*)_V.GetPointer<float>("_terminalVelocity");
-                        bool* Grounded = (bool*)_V.GetPointer<bool>("Grounded");
+                        float* _verticalVelocity = (float*)_V.Get("_verticalVelocity");
+                        float* _terminalVelocity = (float*)_V.Get("_terminalVelocity");
+                        bool* Grounded = (bool*)_V.Get("Grounded");
                         CharacterController characterController = _V.Get<CharacterController>("characterController");
-                        float* _targetRotation = (float*)_V.GetPointer<float>("_targetRotation");
-                        float* _speed = (float*)_V.GetPointer<float>("_speed");
-                        LayerMask* GroundLayers = (LayerMask*)_V.GetPointer<LayerMask>("GroundLayers");
+                        float* _targetRotation = (float*)_V.Get("_targetRotation");
+                        float* _speed = (float*)_V.Get("_speed");
+                        LayerMask* GroundLayers = (LayerMask*)_V.Get("GroundLayers");
 
 
                         if (*_verticalVelocity < 0.0f)

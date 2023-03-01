@@ -9,10 +9,10 @@ namespace ECFSM
 {
     public class State
     {
-        public Action<MiniDict<string>> onEnter;
-        public Action<MiniDict<string>> onFixedUpdate;
-        public Action<MiniDict<string>> onUpdate;
-        public Action<MiniDict<string>> onExit;
+        public Action<Dictionary<string, Variable>> onEnter;
+        public Action<Dictionary<string, Variable>> onFixedUpdate;
+        public Action<Dictionary<string, Variable>> onUpdate;
+        public Action<Dictionary<string, Variable>> onExit;
     }
 
 
