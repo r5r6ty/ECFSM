@@ -13,6 +13,7 @@ namespace ECFSM
         public Action<Dictionary<string, Variable>> onFixedUpdate;
         public Action<Dictionary<string, Variable>> onUpdate;
         public Action<Dictionary<string, Variable>> onExit;
+        public Action<Dictionary<string, Variable>> onAnimationEvent;
     }
 
 

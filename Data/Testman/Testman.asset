@@ -12,6 +12,475 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92d391034efd38e4595ec85a763ec669, type: 3}
   m_Name: Testman
   m_EditorClassIdentifier: 
-  injectObject:
-    m_keys: []
-    m_values: []
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+    - {fileID: 11400000}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: injectObject
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[UnityEngine.Object,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: LandingAudioClip
+    - Name: $v
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: states
+      Entry: 7
+      Data: 2|System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[ECFSM.State,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 3|System.Collections.Generic.GenericEqualityComparer`1[[System.Int32,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 7
+      Data: 4|ECFSM.State, Assembly-CSharp
+    - Name: onEnter
+      Entry: 7
+      Data: 5|System.Action`1[[System.Collections.Generic.Dictionary`2[[System.String,
+        mscorlib],[ECFSM.Variable, Assembly-CSharp]], mscorlib]], mscorlib
+    - Name: target
+      Entry: 7
+      Data: 6|ECFSM.Testman+<>c, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: declaringType
+      Entry: 7
+      Data: 7|System.RuntimeType, mscorlib
+    - Name: 
+      Entry: 1
+      Data: ECFSM.Testman+<>c, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: methodName
+      Entry: 1
+      Data: <OnValidate>b__16_0
+    - Name: delegateType
+      Entry: 7
+      Data: 8|System.RuntimeType, mscorlib
+    - Name: 
+      Entry: 1
+      Data: System.Action`1[[System.Collections.Generic.Dictionary`2[[System.String,
+        mscorlib],[ECFSM.Variable, Assembly-CSharp]], mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: signature
+      Entry: 7
+      Data: 9|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 10|System.RuntimeType, mscorlib
+    - Name: 
+      Entry: 1
+      Data: System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[ECFSM.Variable,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: onFixedUpdate
+      Entry: 6
+      Data: 
+    - Name: onUpdate
+      Entry: 7
+      Data: 11|System.Action`1[[System.Collections.Generic.Dictionary`2[[System.String,
+        mscorlib],[ECFSM.Variable, Assembly-CSharp]], mscorlib]], mscorlib
+    - Name: target
+      Entry: 9
+      Data: 6
+    - Name: declaringType
+      Entry: 9
+      Data: 7
+    - Name: methodName
+      Entry: 1
+      Data: <OnValidate>b__16_1
+    - Name: delegateType
+      Entry: 9
+      Data: 8
+    - Name: signature
+      Entry: 7
+      Data: 12|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 9
+      Data: 10
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: onExit
+      Entry: 6
+      Data: 
+    - Name: onAnimationEvent
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 10
+    - Name: $v
+      Entry: 7
+      Data: 13|ECFSM.State, Assembly-CSharp
+    - Name: onEnter
+      Entry: 7
+      Data: 14|System.Action`1[[System.Collections.Generic.Dictionary`2[[System.String,
+        mscorlib],[ECFSM.Variable, Assembly-CSharp]], mscorlib]], mscorlib
+    - Name: target
+      Entry: 9
+      Data: 6
+    - Name: declaringType
+      Entry: 9
+      Data: 7
+    - Name: methodName
+      Entry: 1
+      Data: <OnValidate>b__16_2
+    - Name: delegateType
+      Entry: 9
+      Data: 8
+    - Name: signature
+      Entry: 7
+      Data: 15|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 9
+      Data: 10
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: onFixedUpdate
+      Entry: 6
+      Data: 
+    - Name: onUpdate
+      Entry: 7
+      Data: 16|System.Action`1[[System.Collections.Generic.Dictionary`2[[System.String,
+        mscorlib],[ECFSM.Variable, Assembly-CSharp]], mscorlib]], mscorlib
+    - Name: target
+      Entry: 10
+      Data: 1
+    - Name: declaringType
+      Entry: 7
+      Data: 17|System.RuntimeType, mscorlib
+    - Name: 
+      Entry: 1
+      Data: ECFSM.Testman, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: methodName
+      Entry: 1
+      Data: <OnValidate>b__16_3
+    - Name: delegateType
+      Entry: 9
+      Data: 8
+    - Name: signature
+      Entry: 7
+      Data: 18|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 9
+      Data: 10
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: onExit
+      Entry: 7
+      Data: 19|System.Action`1[[System.Collections.Generic.Dictionary`2[[System.String,
+        mscorlib],[ECFSM.Variable, Assembly-CSharp]], mscorlib]], mscorlib
+    - Name: target
+      Entry: 9
+      Data: 6
+    - Name: declaringType
+      Entry: 9
+      Data: 7
+    - Name: methodName
+      Entry: 1
+      Data: <OnValidate>b__16_5
+    - Name: delegateType
+      Entry: 9
+      Data: 8
+    - Name: signature
+      Entry: 7
+      Data: 20|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 9
+      Data: 10
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: onAnimationEvent
+      Entry: 7
+      Data: 21|System.Action`1[[System.Collections.Generic.Dictionary`2[[System.String,
+        mscorlib],[ECFSM.Variable, Assembly-CSharp]], mscorlib]], mscorlib
+    - Name: target
+      Entry: 10
+      Data: 1
+    - Name: declaringType
+      Entry: 9
+      Data: 17
+    - Name: methodName
+      Entry: 1
+      Data: <OnValidate>b__16_4
+    - Name: delegateType
+      Entry: 9
+      Data: 8
+    - Name: signature
+      Entry: 7
+      Data: 22|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 9
+      Data: 10
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 30
+    - Name: $v
+      Entry: 7
+      Data: 23|ECFSM.State, Assembly-CSharp
+    - Name: onEnter
+      Entry: 7
+      Data: 24|System.Action`1[[System.Collections.Generic.Dictionary`2[[System.String,
+        mscorlib],[ECFSM.Variable, Assembly-CSharp]], mscorlib]], mscorlib
+    - Name: target
+      Entry: 10
+      Data: 1
+    - Name: declaringType
+      Entry: 9
+      Data: 17
+    - Name: methodName
+      Entry: 1
+      Data: <OnValidate>b__16_6
+    - Name: delegateType
+      Entry: 9
+      Data: 8
+    - Name: signature
+      Entry: 7
+      Data: 25|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 9
+      Data: 10
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: onFixedUpdate
+      Entry: 6
+      Data: 
+    - Name: onUpdate
+      Entry: 7
+      Data: 26|System.Action`1[[System.Collections.Generic.Dictionary`2[[System.String,
+        mscorlib],[ECFSM.Variable, Assembly-CSharp]], mscorlib]], mscorlib
+    - Name: target
+      Entry: 10
+      Data: 1
+    - Name: declaringType
+      Entry: 9
+      Data: 17
+    - Name: methodName
+      Entry: 1
+      Data: <OnValidate>b__16_7
+    - Name: delegateType
+      Entry: 9
+      Data: 8
+    - Name: signature
+      Entry: 7
+      Data: 27|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 9
+      Data: 10
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: onExit
+      Entry: 7
+      Data: 28|System.Action`1[[System.Collections.Generic.Dictionary`2[[System.String,
+        mscorlib],[ECFSM.Variable, Assembly-CSharp]], mscorlib]], mscorlib
+    - Name: target
+      Entry: 9
+      Data: 6
+    - Name: declaringType
+      Entry: 9
+      Data: 7
+    - Name: methodName
+      Entry: 1
+      Data: <OnValidate>b__16_8
+    - Name: delegateType
+      Entry: 9
+      Data: 8
+    - Name: signature
+      Entry: 7
+      Data: 29|System.Type[], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 9
+      Data: 10
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: onAnimationEvent
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  MoveSpeed: 2
+  SprintSpeed: 5.335
+  RotationSmoothTime: 0.12
+  SpeedChangeRate: 10
+  FootstepAudioVolume: 0.5
+  JumpHeight: 1.2
+  Gravity: -15
+  JumpTimeout: 0.5
+  FallTimeout: 0.15
+  GroundedOffset: -0.14
+  GroundedRadius: 0.28

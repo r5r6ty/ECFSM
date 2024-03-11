@@ -2,8 +2,10 @@ using DictPlus;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using static UnityEditor.Progress;
 using Object = UnityEngine.Object;
 
 namespace ECFSM
@@ -11,6 +13,7 @@ namespace ECFSM
     public abstract class Variable
     {
         unsafe public void* ptr;
+        public ulong gcHandler;
     }
 
     public class Variable<T> : Variable
@@ -19,7 +22,7 @@ namespace ECFSM
         unsafe public Variable(T value)
         {
             this.value = value;
-            ptr = DictPlus.DictPlus.GetPtr(ref this.value);
+            ptr = DictPlus.DictPlus.GetPtr(ref this.value, out gcHandler);
         }
     }
 
@@ -41,7 +44,6 @@ namespace ECFSM
     }
     public class Com : SerializedMonoBehaviour
     {
-        public Dictionary<string, string> asd = new Dictionary<string, string>();
         // 实体
         public Entity entity;
         // 状态数据（存有一个种类的data共用的状态列表）
@@ -56,15 +58,19 @@ namespace ECFSM
 
         // 变量字典
         //[HideInInspector]
-        private Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
+        public Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
+
+        public Testman sd;
 
         void Awake()
         {
+            variables = new Dictionary<string, Variable>();
             unsafe
             {
                 // 设置一些访问外界的变量
                 variables.Set("_com", this);
                 variables.Set("_entity", entity);
+                variables.Set("_data", data);
                 // 设置注入游戏物体
                 foreach (var obj in injectObject)
                 {
@@ -175,6 +181,13 @@ namespace ECFSM
             }
         }
 
+        private void OnDestroy()
+        {
+            foreach (var v in variables.Values)
+                if (v.gcHandler > 0)
+                    UnsafeUtility.ReleaseGCObject(v.gcHandler);
+        }
+
         public void OnStart()
         {
             if (data.states.TryGetValue(stateno, out State state))
@@ -212,6 +225,11 @@ namespace ECFSM
             }
         }
 
+        public void OnFootstep()
+        {
+            print("asd");
+        }
+
         // 追加值变量用的
         [SerializeField]
         private readonly string VKey;
@@ -233,8 +251,9 @@ namespace ECFSM
                 ValueType.Vector3Int => Vector3Int.zero,
                 ValueType.Quaternion => Quaternion.identity,
                 ValueType.LayerMask => default(LayerMask),
+                ValueType.Attribute => new AudioClip[0],
                 _ => null
-            };
+            }; ;
 
             persistentVariables.Add(VKey, v);
         }

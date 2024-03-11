@@ -1,6 +1,7 @@
 using ECFSM;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
@@ -12,24 +13,39 @@ namespace DictPlus {
         }
     }
     public static unsafe class DictPlus {
-        public static void* GetPtr<K, V>(this Dictionary<K, V> dict, K key) where K : notnull {
+        public static void* GetPtr<K, V>(this Dictionary<K, V> dict, K key, out ulong gcHandler)
+        {
+            gcHandler = 0;
             V value = dict[key];
             if (value == null) return null;
-            byte* valuePtr = (byte*) UnsafeUtility.PinGCObjectAndGetAddress(value, out ulong gcHandler);
-            UnsafeUtility.ReleaseGCObject(gcHandler);
-            if (!value.GetType().IsValueType) return valuePtr;
-            byte* dataPtr = valuePtr + ClassHeader.HeaderSize;
-            return dataPtr;
+            if (value.GetType().IsValueType)
+            {
+                byte* valuePtr = (byte*) UnsafeUtility.PinGCObjectAndGetAddress(value, out ulong handler);
+                gcHandler = handler;
+                byte* dataPtr = valuePtr + ClassHeader.HeaderSize;
+                return dataPtr;
+            }
+            else
+            {
+                return null;
+            }    
         }
 
-        public static void* GetPtr<V>(ref V value)
+        public static void* GetPtr<V>(ref V value, out ulong gcHandler)
         {
+            gcHandler = 0;
             if (value == null) return null;
-            byte* valuePtr = (byte*)UnsafeUtility.PinGCObjectAndGetAddress(value, out ulong gcHandler);
-            UnsafeUtility.ReleaseGCObject(gcHandler);
-            if (!value.GetType().IsValueType) return valuePtr;
-            byte* dataPtr = valuePtr + ClassHeader.HeaderSize;
-            return dataPtr;
+            if (value.GetType().IsValueType)
+            {
+                byte* valuePtr = (byte*)UnsafeUtility.PinGCObjectAndGetAddress(value, out ulong handler);
+                gcHandler = handler;
+                byte* dataPtr = valuePtr + ClassHeader.HeaderSize;
+                return dataPtr;
+            }
+            else
+            {
+                return null;
+            }    
         }
 
         public static void* Set<V>(this Dictionary<string, Variable> dict, string key, V value) where V : struct
@@ -65,6 +81,11 @@ namespace DictPlus {
                 return value.ptr;
             else
                 return null;
+        }
+
+        public static void Del()
+        {
+
         }
     }
 }

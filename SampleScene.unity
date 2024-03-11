@@ -164,10 +164,10 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: asd
+    - Name: injectObject
       Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.String,
-        mscorlib]], mscorlib
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[UnityEngine.Object,
+        UnityEngine.CoreModule]], mscorlib
     - Name: comparer
       Entry: 7
       Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
@@ -175,22 +175,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: injectObject
-      Entry: 7
-      Data: 2|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[UnityEngine.Object,
-        UnityEngine.CoreModule]], mscorlib
-    - Name: comparer
-      Entry: 9
-      Data: 1
     - Name: 
       Entry: 12
       Data: 3
@@ -238,7 +222,7 @@ MonoBehaviour:
       Data: 
     - Name: persistentVariables
       Entry: 7
-      Data: 3|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object,
+      Data: 2|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object,
         mscorlib]], mscorlib
     - Name: comparer
       Entry: 9
@@ -254,7 +238,7 @@ MonoBehaviour:
       Data: HP
     - Name: $v
       Entry: 7
-      Data: 4|System.Int32, mscorlib
+      Data: 3|System.Int32, mscorlib
     - Name: 
       Entry: 3
       Data: 100
@@ -272,7 +256,7 @@ MonoBehaviour:
       Data: GroundLayers
     - Name: $v
       Entry: 7
-      Data: 5|UnityEngine.LayerMask, UnityEngine.CoreModule
+      Data: 4|UnityEngine.LayerMask, UnityEngine.CoreModule
     - Name: 
       Entry: 3
       Data: 16
@@ -288,12 +272,32 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: variables
+      Entry: 7
+      Data: 5|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[ECFSM.Variable,
+        Assembly-CSharp]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 6|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
     - Name: VKey
       Entry: 1
-      Data: GroundLayers
+      Data: FootstepAudioClips
     - Name: VType
       Entry: 3
-      Data: 9
+      Data: 10
   entity: {fileID: 1941700877}
   data: {fileID: 11400000, guid: 2efda6bd794d6ec4db3a6d83d22dd9b5, type: 2}
   stateno: 0
@@ -925,6 +929,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
+--- !u!1 &1684694932 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4416926081852918481, guid: 1d653bbf952dd6e4fb15b7c6b36c2f04,
+    type: 3}
+  m_PrefabInstance: {fileID: 2028061178}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1764214107
 GameObject:
   m_ObjectHideFlags: 0
@@ -1125,7 +1135,11 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1221041505}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 1d653bbf952dd6e4fb15b7c6b36c2f04,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2028061184}
   m_SourcePrefab: {fileID: 100100000, guid: 1d653bbf952dd6e4fb15b7c6b36c2f04, type: 3}
 --- !u!4 &2028061179 stripped
 Transform:
@@ -1145,6 +1159,18 @@ CharacterController:
     type: 3}
   m_PrefabInstance: {fileID: 2028061178}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2028061184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1684694932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0445b05fd49b854c830e6c4630c0329, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2114283753834967212
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using DictPlus;
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ECFSM
 {
@@ -20,6 +21,7 @@ namespace ECFSM
         [Tooltip("Acceleration and deceleration")]
         public float SpeedChangeRate = 10.0f;
 
+        [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
         [Tooltip("The height the player can jump")]
         public float JumpHeight = 1.2f;
 
@@ -216,6 +218,16 @@ namespace ECFSM
                             _V.Get<Com>("_com").ChangeState(30);
                         }
 
+                    },
+                    onAnimationEvent = (_V) => {
+                        Transform transform = _V.Get<Transform>("transform");
+                        CharacterController characterController = _V.Get<CharacterController>("characterController");
+                        AudioClip LandingAudioClip = (AudioClip)_V.Get<Data>("_data").injectObject["LandingAudioClip"];
+                        ////AudioClip[] FootstepAudioClips = _V.Get<AudioClip[]>("FootstepAudioClips");
+
+                        ////var index = Random.Range(0, FootstepAudioClips.Length);
+                        ////AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(characterController.center), FootstepAudioVolume);
+                        AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(characterController.center), FootstepAudioVolume);
                     },
                     onExit = (_V) => { }
                 };
