@@ -2,10 +2,8 @@ using DictPlus;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
-using static UnityEditor.Progress;
 using Object = UnityEngine.Object;
 
 namespace ECFSM
@@ -14,6 +12,12 @@ namespace ECFSM
     {
         unsafe public void* ptr;
         public ulong gcHandler;
+
+        public void Release()
+        {
+            if (gcHandler > 0)
+                UnsafeUtility.ReleaseGCObject(gcHandler);
+        }
     }
 
     public class Variable<T> : Variable
@@ -57,7 +61,7 @@ namespace ECFSM
         public Dictionary<string, object> persistentVariables = new Dictionary<string, object>();
 
         // ±äÁ¿×Öµä
-        //[HideInInspector]
+        [HideInInspector]
         public Dictionary<string, Variable> variables;
 
         void Awake()
@@ -182,8 +186,7 @@ namespace ECFSM
         private void OnDestroy()
         {
             foreach (var v in variables.Values)
-                if (v.gcHandler > 0)
-                    UnsafeUtility.ReleaseGCObject(v.gcHandler);
+                    v.Release();
         }
 
         public void OnStart()

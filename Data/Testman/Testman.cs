@@ -67,7 +67,7 @@ namespace ECFSM
                         _V.Set("_jumpTimeoutDelta", 0.0f);
                         _V.Set("_fallTimeoutDelta", 0.0f);
 
-                        Transform transform = _V.Get<Transform>("transform");
+                        _V.Get("transform", out Transform transform);
 
                         float* _speed = (float*)_V.Set("dasdas", 0.0f);
                         BoxCollider asdd = _V.Set("boxCollider", transform.gameObject.AddComponent<BoxCollider>());
