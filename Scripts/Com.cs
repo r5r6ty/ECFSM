@@ -58,9 +58,7 @@ namespace ECFSM
 
         // 变量字典
         //[HideInInspector]
-        public Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
-
-        public Testman sd;
+        public Dictionary<string, Variable> variables;
 
         void Awake()
         {
@@ -115,7 +113,7 @@ namespace ECFSM
                             break;
                         default:
                             Debug.LogWarning("写入未注册过的类型！");
-                            variables.Set(v.Key, v);
+                            //variables.Set(v.Key, v);
                             break;
                     }
                 }
@@ -223,11 +221,6 @@ namespace ECFSM
             {
                 state?.onEnter?.Invoke(variables);
             }
-        }
-
-        public void OnFootstep()
-        {
-            print("asd");
         }
 
         // 追加值变量用的

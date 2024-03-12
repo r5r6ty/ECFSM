@@ -73,56 +73,6 @@ namespace ECFSM
                         BoxCollider asdd = _V.Set("boxCollider", transform.gameObject.AddComponent<BoxCollider>());
 
                         _V.Get<Com>("_com").ChangeState(10);
-                    },
-                    onUpdate = (_V) =>
-                    {
-                        #region ≤‚ ‘≤‚ ‘≤‚ ‘≤‚ ‘≤‚ ‘≤‚ ‘≤‚ ‘≤‚ ‘
-                        //Val<Transform> t = (Val<Transform>)V["transform"];
-
-                        //var t2 = _V.Get<Transform>("transform");
-                        //Debug.Log(t2);
-
-
-
-                        //Val<int> ggg = (Val<int>)_V.Get("HP"];
-                        //Val<float> ggg2 = (Val<float>)_V.Get("fff"];
-
-                        //fixed (float* gg = &ggg, gg2 = &ggg3)
-                        //{
-                        //    *gg = *gg + 1.1f;
-                        //    *gg2 = *gg2 + 1.1f;
-                        //}
-
-                        //void* ptr = UnsafeUtility.AddressOf(ref ggg);
-                        //void* ptr2 = UnsafeUtility.AddressOf(ref ggg2);
-                        void* ptr = _V.Get("HP");
-                        void* ptr2 = _V.Get("fff");
-
-                        int* gg = (int*)ptr;
-                        *gg = *gg + 1;
-
-                        float* gg2 = (float*)ptr2;
-                        *gg2 = *gg2 + 30.1f;
-
-
-                        //Debug.Log((float)((Val<int>)_V.Get("HP"]));
-                        //Debug.Log((float)((Val<float>)_V.Get("fff"]));
-
-                        //ref object HP = ref V["HP"];
-
-                        //EInt ptr = (EInt)V["HP"];
-
-                        //ptr = ptr + 1;
-
-
-                        //Debug.Log(ptr);
-
-
-
-                        //HP += 1;
-
-                        //Debug.Log("sasdsd " + HP);
-                        #endregion
                     }
                 };
                 // ¥˝ª˙/“∆∂Ø
@@ -135,16 +85,16 @@ namespace ECFSM
                     onUpdate = (_V) =>
                     {
 
-                        Transform transform = _V.Get<Transform>("transform");
+                        _V.Get("transform", out Transform transform);
                         //Rigidbody rigidbody = V.Get<Rigidbody>("rigidbody");
                         //CapsuleCollider capsuleCollider = V.Get<CapsuleCollider>("capsuleCollider");
-                        Animator animator = _V.Get<Animator>("animator");
-                        CharacterController characterController = _V.Get<CharacterController>("characterController");
-                        float* _speed = (float*)_V.Get("_speed");
-                        float* _animationBlend = (float*)_V.Get("_animationBlend");
-                        float* _targetRotation = (float*)_V.Get("_targetRotation");
-                        float* _rotationVelocity = (float*)_V.Get("_rotationVelocity");
-                        float* _verticalVelocity = (float*)_V.Get("_verticalVelocity");
+                        _V.Get("animator", out Animator animator);
+                        _V.Get("characterController", out CharacterController characterController);
+                        _V.Get("_speed", out float* _speed);
+                        _V.Get("_animationBlend", out float* _animationBlend);
+                        _V.Get("_targetRotation", out float* _targetRotation);
+                        _V.Get("_rotationVelocity", out float* _rotationVelocity);
+                        _V.Get("_verticalVelocity", out float* _verticalVelocity);
 
                         Vector2 move = new Vector2(UnityEngine.Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
@@ -220,8 +170,8 @@ namespace ECFSM
 
                     },
                     onAnimationEvent = (_V) => {
-                        Transform transform = _V.Get<Transform>("transform");
-                        CharacterController characterController = _V.Get<CharacterController>("characterController");
+                        _V.Get("transform", out Transform transform);
+                        _V.Get("characterController", out CharacterController characterController);
                         AudioClip LandingAudioClip = (AudioClip)_V.Get<Data>("_data").injectObject["LandingAudioClip"];
                         ////AudioClip[] FootstepAudioClips = _V.Get<AudioClip[]>("FootstepAudioClips");
 
@@ -238,8 +188,8 @@ namespace ECFSM
                     {
                         Debug.Log("∆Ã¯£∫30");
 
-                        Animator animator = _V.Get<Animator>("animator");
-                        float* _verticalVelocity = (float*)_V.Get("_verticalVelocity");
+                        _V.Get("animator", out Animator animator);
+                        _V.Get("_verticalVelocity", out float* _verticalVelocity);
 
                         // the square root of H * -2 * G = how much velocity needed to reach desired height
                         *_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
@@ -250,15 +200,15 @@ namespace ECFSM
                     onUpdate = (_V) =>
                     {
 
-                        Transform transform = _V.Get<Transform>("transform");
-                        Animator animator = _V.Get<Animator>("animator");
-                        float* _verticalVelocity = (float*)_V.Get("_verticalVelocity");
-                        float* _terminalVelocity = (float*)_V.Get("_terminalVelocity");
-                        bool* Grounded = (bool*)_V.Get("Grounded");
-                        CharacterController characterController = _V.Get<CharacterController>("characterController");
-                        float* _targetRotation = (float*)_V.Get("_targetRotation");
-                        float* _speed = (float*)_V.Get("_speed");
-                        LayerMask* GroundLayers = (LayerMask*)_V.Get("GroundLayers");
+                        _V.Get("transform", out Transform transform);
+                        _V.Get("animator", out Animator animator);
+                        _V.Get("_verticalVelocity", out float* _verticalVelocity);
+                        _V.Get("_terminalVelocity", out float* _terminalVelocity);
+                        _V.Get("Grounded", out bool* Grounded);
+                        _V.Get("characterController", out CharacterController characterController);
+                        _V.Get("_targetRotation", out float* _targetRotation);
+                        _V.Get("_speed", out float* _speed);
+                        _V.Get("GroundLayers", out LayerMask* GroundLayers);
 
 
                         if (*_verticalVelocity < 0.0f)
@@ -298,7 +248,9 @@ namespace ECFSM
                         characterController.Move(targetDirection.normalized * (*_speed * Time.deltaTime) +
                                      new Vector3(0.0f, *_verticalVelocity, 0.0f) * Time.deltaTime);
                     },
-                    onExit = (_V) => { }
+                    onExit = (_V) => {
+                        //_V.Del("_speed");
+                    }
                 };
             }
         }
