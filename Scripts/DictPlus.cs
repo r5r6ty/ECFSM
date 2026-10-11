@@ -1,135 +1,86 @@
-using ECFSM;
 using System.Collections.Generic;
-using Unity.Collections.LowLevel.Unsafe;
 
-namespace DictPlus {
-    public class ClassHeader {
-        public byte value = 0;
-        public static int HeaderSize {
-            get { return UnsafeUtility.GetFieldOffset(typeof(ClassHeader).GetField(nameof(value))); }
+namespace DictPlus
+{
+    // 字典里真正存数据的箱子，Variable<T>.value 才是数据本体
+    public abstract class Variable
+    {
+    }
+
+    public class Variable<T> : Variable
+    {
+        public T value;
+
+        public Variable(T value)
+        {
+            this.value = value;
         }
     }
-    public static unsafe class DictPlus {
-        public static void* GetPtr(this Dictionary<string, Variable> dict, string key, out ulong gcHandler)
-        {
-            gcHandler = 0;
-            if (dict.TryGetValue(key, out Variable value))
-            {
-                if (value.GetType().IsValueType)
-                {
-                    byte* valuePtr = (byte*)UnsafeUtility.PinGCObjectAndGetAddress(value, out gcHandler);
-                    byte* dataPtr = valuePtr + ClassHeader.HeaderSize;
-                    return dataPtr;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
-            }
-        }
 
-        public static void* GetPtr<V>(ref V value, out ulong gcHandler)
-        {
-            gcHandler = 0;
-            if (value == null) return null;
-            if (value.GetType().IsValueType)
-            {
-                byte* valuePtr = (byte*)UnsafeUtility.PinGCObjectAndGetAddress(value, out gcHandler);
-                byte* dataPtr = valuePtr + ClassHeader.HeaderSize;
-                return dataPtr;
-            }
-            else
-            {
-                return null;
-            }    
-        }
-
+    // 用 ref 返回值代替裸指针：拿到 ref 后直接当局部变量读写，
+    // 改的就是字典里存的那份，全程安全，不再需要 pin 住 GC 对象。
+    public static class DictPlus
+    {
         #region Set
-        public static V Set<K, V>(this Dictionary<K, Variable> dict, K key, V value) where V : class
+
+        // 值类型：返回 ref，可以紧接着当普通变量用
+        public static ref V SetRef<V>(this Dictionary<string, Variable> dict, string key, V value) where V : unmanaged
         {
-            if (dict.TryGetValue(key, out var v))
+            if (dict.TryGetValue(key, out Variable v))
             {
-                ((Variable<V>)v).value = value;
-                return value;
+                return ref ((Variable<V>)v).value;
             }
-            else
-            {
-                v = new Variable<V>(value);
-                dict.TryAdd(key, v);
-                return ((Variable<V>)v).value;
-            }
+            Variable<V> box = new Variable<V>(value);
+            dict[key] = box;
+            return ref box.value;
         }
 
-        public static V* Set<V>(this Dictionary<string, Variable> dict, string key, V value) where V : unmanaged
+        // 引用类型：返回对象本身
+        public static V Set<V>(this Dictionary<string, Variable> dict, string key, V value) where V : class
         {
-            if (dict.TryGetValue(key, out var v))
+            if (dict.TryGetValue(key, out Variable v))
             {
-                V* ptr = (V*)v.ptr;
-                *ptr = value;
-                return ptr;
+                return ((Variable<V>)v).value = value;
             }
-            else
-            {
-                v = new Variable<V>(value);
-                dict.TryAdd(key, v);
-                return (V*)v.ptr;
-            }
+            Variable<V> box = new Variable<V>(value);
+            dict[key] = box;
+            return box.value;
         }
+
         #endregion
 
         #region Get
+
+        // 值类型：ref 返回，读写都直达字典里存的那份；键不存在会抛异常
+        public static ref V GetRef<V>(this Dictionary<string, Variable> dict, string key) where V : unmanaged
+        {
+            if (dict.TryGetValue(key, out Variable v))
+            {
+                return ref ((Variable<V>)v).value;
+            }
+            throw new KeyNotFoundException($"变量字典里没有这个键：{key}");
+        }
+
         public static V Get<V>(this Dictionary<string, Variable> dict, string key) where V : class
         {
-            if (dict.TryGetValue(key, out Variable value))
-                return UnsafeUtility.As<Variable, Variable<V>>(ref value).value;
-            //return ((Variable<V>)value).value;
-            else
-                return null;
+            if (dict.TryGetValue(key, out Variable v) && v is Variable<V> box)
+                return box.value;
+            return null;
         }
 
         public static void Get<V>(this Dictionary<string, Variable> dict, string key, out V result) where V : class
         {
-            if (dict.TryGetValue(key, out Variable value))
-                result = UnsafeUtility.As<Variable, Variable<V>>(ref value).value;
-            //return ((Variable<V>)value).value;
+            if (dict.TryGetValue(key, out Variable v) && v is Variable<V> box)
+                result = box.value;
             else
                 result = null;
         }
 
-        // CS0111: 类型“DictPlus”已定义了一个名为“Get”的具有相同参数类型的成员
-        //public static V* Get<V>(this Dictionary<string, Variable> dict, string key) where V : unmanaged
-        //{
-        //    if (dict.TryGetValue(key, out Variable value))
-        //        return (V*)value.ptr;
-        //    else
-        //        return null;
-        //}
-
-        public static void* Get(this Dictionary<string, Variable> dict, string key)
-        {
-            if (dict.TryGetValue(key, out Variable value))
-                return value.ptr;
-            else
-                return null;
-        }
-
-        public static void Get<V>(this Dictionary<string, Variable> dict, string key, out V* result) where V : unmanaged
-        {
-            if (dict.TryGetValue(key, out Variable value))
-                result = (V*)value.ptr;
-            else
-                result = null;
-        }
         #endregion
 
         public static void Del(this Dictionary<string, Variable> dict, string key)
         {
-            if (dict.Remove(key, out Variable value))
-                value.Release();
+            dict.Remove(key);
         }
     }
 }

@@ -2,34 +2,12 @@ using DictPlus;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace ECFSM
 {
-    public abstract class Variable
-    {
-        unsafe public void* ptr;
-        public ulong gcHandler;
-
-        public void Release()
-        {
-            if (gcHandler > 0)
-                UnsafeUtility.ReleaseGCObject(gcHandler);
-        }
-    }
-
-    public class Variable<T> : Variable
-    {
-        public T value;
-        unsafe public Variable(T value)
-        {
-            this.value = value;
-            ptr = DictPlus.DictPlus.GetPtr(ref this.value, out gcHandler);
-        }
-    }
-
+    // 初始变量下拉框里能选的类型
     public enum ValueType
     {
         Int,
@@ -41,11 +19,9 @@ namespace ECFSM
         Vector3,
         Vector3Int,
         Quaternion,
-        LayerMask,
-        Attribute,
-        LItems,
-        ClipTransitionAsset
+        LayerMask
     }
+
     public class Com : SerializedMonoBehaviour
     {
         // 实体
@@ -57,201 +33,114 @@ namespace ECFSM
 
         // Unity物体注入（依靠插件可以被序列化显示到编辑器里）
         public Dictionary<string, Object> injectObject = new Dictionary<string, Object>();
-        // 初始变量（但是这个无法被序列化显示到编辑器里，只能用Odin，Odin怎么这么强啊！）
+        // 初始变量（<string, object>需要Odin才能序列化显示到编辑器里）
         public Dictionary<string, object> persistentVariables = new Dictionary<string, object>();
 
-        // 变量字典
-        [HideInInspector]
-        public Dictionary<string, Variable> variables;
+        // 变量字典（运行时填充，不序列化）
+        [NonSerialized]
+        public Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
 
         void Awake()
         {
-            variables = new Dictionary<string, Variable>();
-            unsafe
+            // 设置一些访问外界的变量
+            variables.Set("_com", this);
+            variables.Set("_entity", entity);
+            variables.Set("_data", data);
+            // 设置注入游戏物体
+            foreach (var obj in injectObject)
             {
-                // 设置一些访问外界的变量
-                variables.Set("_com", this);
-                variables.Set("_entity", entity);
-                variables.Set("_data", data);
-                // 设置注入游戏物体
-                foreach (var obj in injectObject)
-                {
-                    Object c = obj.Value;
-                    variables.Set(obj.Key, c);
-                }
-                // 设置注入值变量
-                foreach (var v in persistentVariables)
-                {
-                    // 陆续追加
-                    switch (v.Value.GetType())
-                    {
-                        case Type t when t == typeof(int):
-                            {
-                                int c = (int)v.Value;
-                                variables.Set(v.Key, c);
-                            }
-                            break;
-                        case Type t when t == typeof(float):
-                            {
-                                float c = (float)v.Value;
-                                variables.Set(v.Key, c);
-                            }
-                            break;
-                        case Type t when t == typeof(bool):
-                            {
-                                bool c = (bool)v.Value;
-                                variables.Set(v.Key, c);
-                            }
-                            break;
-                        case Type t when t == typeof(Vector3):
-                            {
-                                Vector3 c = (Vector3)v.Value;
-                                variables.Set(v.Key, c);
-                            }
-                            break;
-                        case Type t when t == typeof(LayerMask):
-                            {
-                                LayerMask c = (LayerMask)v.Value;
-                                variables.Set(v.Key, c);
-                            }
-                            break;
-                        default:
-                            Debug.LogWarning("写入未注册过的类型！");
-                            //variables.Set(v.Key, v);
-                            break;
-                    }
-                }
-
-                #region 测试测试测试测试测试测试测试测试
-                //print(variables.Get("_com"));
-                //print(variables.Get("HP"));
-
-
-
-                //ref object HP = ref variables.Get("HP");
-
-                //int aasd = 256;
-                //variables.Add("HP2", &aasd);
-                //int* ggg = (int*)variables.Int("HP");
-
-                //Debug.Log($"{*ggg},{*ggg}");
-                //Debug.Log(*ggg);
-                //Debug.Log(*ggg);
-                //Debug.Log(*ggg);
-                //*ggg += 1;
-                //Debug.Log(*ggg);
-
-
-                //object[] thy = new object[12];
-                //thy[3] = (Int32)337845;
-
-                ////获取结构体占用空间的大小
-                //int nSize = Marshal.SizeOf(thy[3]);
-                ////声明一个相同大小的内存空间
-                //IntPtr intPtr = Marshal.AllocHGlobal(nSize);
-                ////Struct->IntPtr
-                //Marshal.StructureToPtr(thy[3], intPtr, true);
-                ////IntPtr->Struct
-                ////Int32 Info = (Int32)Marshal.PtrToStructure(intPtr, typeof(Int32));
-
-                //void* ppttt = intPtr.ToPointer();
-                //int* sd2ss = (int*)ppttt;
-                //Debug.Log(*sd2ss);
-                //*sd2ss = 119119;
-                //Debug.Log(thy[3]);
-
-
-
-                //object[] sdd = new object[12];
-                //sdd[3] = 3375;
-                //UnsafeTool unsafeTool2 = new UnsafeTool();
-                //byte* ppt = (byte*)Marshal.UnsafeAddrOfPinnedArrayElement(sdd, 3).ToPointer();
-                //void* ptpt = *(void**)ppt;
-                //int sd2 = (int)unsafeTool2.voidPtrToObject(ptpt);
-                //Debug.Log(sd2);
-                //IntPtr ipt = Marshal.UnsafeAddrOfPinnedArrayElement(sdd, 3);
-                //int d = UnsafeUtility.As<IntPtr, int>(ref *(IntPtr*)ipt);
-                //Debug.Log(d);
-
-                //UnsafeTool unsafeTool = new UnsafeTool();
-                //int vvv = 123456;
-                //byte* objPtr = (byte*)&vvv;
-
-                //int* sd = (int*)objPtr;
-                //Debug.Log(*sd);
-                #endregion
+                variables.Set(obj.Key, obj.Value);
+            }
+            // 设置注入值变量
+            foreach (var v in persistentVariables)
+            {
+                SetPersistent(v.Key, v.Value);
             }
         }
 
         private void OnDestroy()
         {
-            foreach (var v in variables.Values)
-                    v.Release();
+            variables?.Clear();
         }
 
         public void OnStart()
         {
-            if (data.states.TryGetValue(stateno, out State state))
-            {
-                state?.onEnter?.Invoke(variables);
-            }
+            Current?.onEnter?.Invoke(variables);
         }
 
         public void OnUpdate()
         {
-            if (data.states.TryGetValue(stateno, out State state))
-            {
-                state?.onUpdate?.Invoke(variables);
-            }
+            Current?.onUpdate?.Invoke(variables);
         }
 
         public void OnFixedUpdate()
         {
-            if (data.states.TryGetValue(stateno, out State state))
-            {
-                state?.onFixedUpdate?.Invoke(variables);
-            }
+            Current?.onFixedUpdate?.Invoke(variables);
         }
 
         public void ChangeState(int index)
         {
-            if (data.states.TryGetValue(stateno, out State state))
-            {
-                state?.onExit?.Invoke(variables);
-            }
+            Current?.onExit?.Invoke(variables);
             stateno = index;
-            if (data.states.TryGetValue(stateno, out state))
+            Current?.onEnter?.Invoke(variables);
+        }
+
+        private State Current
+        {
+            get { return data != null && data.states.TryGetValue(stateno, out State state) ? state : null; }
+        }
+
+        private void SetPersistent(string key, object value)
+        {
+            switch (value)
             {
-                state?.onEnter?.Invoke(variables);
+                case int i: variables.SetRef(key, i); break;
+                case float f: variables.SetRef(key, f); break;
+                case bool b: variables.SetRef(key, b); break;
+                case string s: variables.Set(key, s); break;
+                case Vector2 v2: variables.SetRef(key, v2); break;
+                case Vector2Int v2i: variables.SetRef(key, v2i); break;
+                case Vector3 v3: variables.SetRef(key, v3); break;
+                case Vector3Int v3i: variables.SetRef(key, v3i); break;
+                case Quaternion q: variables.SetRef(key, q); break;
+                case LayerMask lm: variables.SetRef(key, lm); break;
+                default:
+                    Debug.LogWarning($"写入未注册过的类型：{value?.GetType().Name ?? "null"}（键：{key}）", this);
+                    break;
             }
         }
 
         // 追加值变量用的
-        [SerializeField]
-        private readonly string VKey;
         [InlineButton("AddV", "Add")]
         [SerializeField]
-        private readonly ValueType VType;
+        private string VKey = "";
+        [SerializeField]
+        private ValueType VType = ValueType.Int;
 
         private void AddV()
         {
+            if (string.IsNullOrEmpty(VKey))
+            {
+                Debug.LogWarning("变量键名不能为空", this);
+                return;
+            }
+
             object v = VType switch
             {
                 ValueType.Int => 0,
                 ValueType.Float => 0f,
                 ValueType.Bool => false,
-                ValueType.String => VKey,
+                ValueType.String => "",
                 ValueType.Vector2 => Vector2.zero,
                 ValueType.Vector2Int => Vector2Int.zero,
                 ValueType.Vector3 => Vector3.zero,
                 ValueType.Vector3Int => Vector3Int.zero,
                 ValueType.Quaternion => Quaternion.identity,
                 ValueType.LayerMask => default(LayerMask),
-                ValueType.Attribute => new AudioClip[0],
                 _ => null
-            }; ;
+            };
 
-            persistentVariables.Add(VKey, v);
+            persistentVariables[VKey] = v;
         }
     }
 }

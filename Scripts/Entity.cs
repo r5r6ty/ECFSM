@@ -7,7 +7,6 @@ namespace ECFSM
     public class Entity : MonoBehaviour
     {
         public List<Com> coms = new List<Com>();
-        // Start is called before the first frame update
 
         void Start()
         {
@@ -17,12 +16,19 @@ namespace ECFSM
             }
         }
 
-        // Update is called once per frame
         void Update()
         {
             foreach (var com in coms)
             {
                 com.OnUpdate();
+            }
+        }
+
+        void FixedUpdate()
+        {
+            foreach (var com in coms)
+            {
+                com.OnFixedUpdate();
             }
         }
     }
